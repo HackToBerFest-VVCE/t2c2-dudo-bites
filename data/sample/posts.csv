@@ -1,0 +1,6 @@
+account_id,followers,following,account_age_days,post_count_7d,repetition_score,burstiness
+user_101,1800,300,70,12,0.15,0.25
+user_102,2100,260,80,11,0.20,0.30
+user_103,50,2600,5,60,0.90,0.95
+user_104,980,400,42,18,0.30,0.35
+user_105,550,700,20,25,0.70,0.78

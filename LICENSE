@@ -1,0 +1,219 @@
+# DuoBites — Bot-Driven Misinformation Detection Platform
+
+DuoBites is an open-source AI platform for investigating potentially misleading social content, suspicious bot-account behavior, and coordinated posting patterns.
+
+The project is designed for human review and evidence-based investigation. It does not automatically censor content or claim malicious intent without supporting evidence.
+
+## Project goals
+
+- Detect suspicious account behavior using a baseline scikit-learn classifier.
+- Analyze claims and flag uncertainty rather than asserting a claim is false without evidence.
+- Detect repeated or synchronized posting activity using NetworkX-based coordination analysis.
+- Produce explainable risk scores that combine evidence from bot behavior, claim analysis, and coordination.
+- Provide a simple API and dashboard foundation for later expansion.
+
+## Current implementation status
+
+Implemented in this MVP:
+
+- CSV ingestion and validation
+- Baseline bot-behavior classification using scikit-learn
+- Claim analysis with uncertainty-aware output
+- Coordination detection using NetworkX
+- Explainable risk scoring
+- FastAPI backend with health checks and analysis endpoints
+- React dashboard starter
+- PostgreSQL configuration template and Docker setup
+- Automated tests for core validation and risk logic
+
+Planned for future enhancement:
+
+- richer ML models and feature engineering
+- external fact-check integration with trusted sources
+- deeper analyst workflow and review UI
+- persistent database-driven records and historical reporting
+
+## Technology stack
+
+- Python
+- FastAPI
+- scikit-learn
+- NetworkX
+- PostgreSQL
+- React (dashboard starter)
+- Pandas
+- SQLAlchemy
+- Hugging Face integrations (optional, guarded when available)
+
+## Repository structure
+
+```text
+.
+├── LICENSE
+├── README.md
+├── requirements.txt
+├── .env.example
+├── docker-compose.yml
+├── .gitignore
+├── backend/
+│   ├── app/
+│   │   ├── __init__.py
+│   │   ├── config.py
+│   │   ├── database.py
+│   │   ├── main.py
+│   │   ├── models.py
+│   │   └── services/
+│   │       ├── __init__.py
+│   │       ├── bot_classifier.py
+│   │       ├── claim_analysis.py
+│   │       ├── coordination_service.py
+│   │       ├── data_validation.py
+│   │       └── risk_scoring_service.py
+│   └── tests/
+│       ├── test_risk_scoring.py
+│       └── test_validation.py
+├── data/
+│   └── sample/
+│       ├── accounts.csv
+│       └── posts.csv
+├── frontend/
+│   ├── package.json
+│   ├── vite.config.js
+│   ├── index.html
+│   └── src/
+│       ├── App.jsx
+│       ├── main.jsx
+│       └── index.css
+├── docs/
+│   └── architecture.md
+└── scripts/
+    └── seed_demo_data.py
+```
+
+## Quick start
+
+### 1) Clone and create a virtual environment
+
+```bash
+git clone <your-repo-url>
+cd duobites
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+### 2) Configure environment variables
+
+Copy the example environment file:
+
+```bash
+cp .env.example .env
+```
+
+Example values:
+
+```env
+DATABASE_URL=postgresql://duobites:duobites@localhost:5432/duobites
+APP_ENV=development
+SECRET_KEY=change-me-in-production
+```
+
+### 3) Start PostgreSQL with Docker
+
+```bash
+docker compose up -d postgres
+```
+
+### 4) Run the backend API
+
+```bash
+uvicorn backend.app.main:app --reload
+```
+
+The API will be available at:
+
+- http://localhost:8000/health
+- http://localhost:8000/docs
+
+### 5) Run the frontend dashboard
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+## API overview
+
+Key endpoints:
+
+- GET `/health` — service status
+- POST `/api/v1/ingest/csv` — CSV validation and ingestion
+- POST `/api/v1/analyze` — analyze accounts and posts
+- GET `/api/v1/sample-data` — return sample data for demo use
+
+Example request:
+
+```bash
+curl -X POST "http://localhost:8000/api/v1/analyze" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "posts": [
+      {"account_id": "user_101", "timestamp": "2026-10-24T10:00:00", "text": "A new emergency law was announced overnight."},
+      {"account_id": "user_102", "timestamp": "2026-10-24T10:03:00", "text": "A new emergency law was announced overnight."}
+    ],
+    "accounts": [
+      {"account_id": "user_101", "followers": 1800, "following": 300, "account_age_days": 70, "post_count_7d": 12},
+      {"account_id": "user_102", "followers": 2100, "following": 260, "account_age_days": 80, "post_count_7d": 11}
+    ]
+  }'
+```
+
+## Sample data
+
+The project includes synthetic sample data under `data/sample/` for demonstration purposes only. It is not based on private or real individual profiles.
+
+## How GitHub Copilot helped
+
+GitHub Copilot was used to help with:
+
+- project structure planning
+- FastAPI route scaffolding
+- Python service design
+- test generation
+- documentation drafting
+- refactoring toward a beginner-friendly architecture
+
+This project intentionally uses Copilot as a coding assistant, while the final decisions and validation remain human-led.
+
+## Important decisions
+
+- The system emphasizes explainability and human review.
+- Bot labels are model-derived signals, not proof of malicious behavior.
+- Claim analysis returns evidence and uncertainty states instead of hard false/true calls without reference support.
+- Coordination analysis identifies suspicious patterns, not malicious intent.
+- The project keeps its first MVP focused on a working, testable workflow rather than a large speculative feature set.
+
+## Testing
+
+Run the test suite:
+
+```bash
+pytest
+```
+
+The project includes tests for:
+
+- invalid CSV inputs
+- missing required columns
+- empty datasets
+- risk-score calculation logic
+
+## Licence
+
+This project is licensed under the MIT License. See `LICENSE` for details.
+
+## Disclaimer
+
+This project is intended for responsible analysis and research. It does not replace fact-checking, legal review, or law enforcement workflows.

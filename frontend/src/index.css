@@ -1,0 +1,68 @@
+const sampleData = {
+  riskScore: 68,
+  status: 'medium',
+  accounts: [
+    { account_id: 'user_103', suspicion: 'Likely suspicious', score: 84 },
+    { account_id: 'user_101', suspicion: 'Needs review', score: 59 },
+    { account_id: 'user_102', suspicion: 'Needs review', score: 56 },
+  ],
+  coordination: [
+    { label: 'public health emergency was announced overnight', accounts: ['user_101', 'user_102', 'user_103'] },
+  ],
+  evidence: [
+    'Repetitive text appears across multiple accounts within a short time window.',
+    'One account shows high burst posting behavior and an unusual follower/following pattern.',
+    'Claim wording requires human validation before any false claim label is assigned.',
+  ],
+};
+
+export default function App() {
+  return (
+    <div className="app-shell">
+      <header className="topbar">
+        <h1>DuoBites</h1>
+        <span className="status-pill">Risk level: {sampleData.status}</span>
+      </header>
+
+      <main className="content-grid">
+        <section className="card summary-card">
+          <h2>Global risk score</h2>
+          <div className="score">{sampleData.riskScore}</div>
+          <p>Explainable risk score combining account behavior, content signals, and coordination evidence.</p>
+        </section>
+
+        <section className="card">
+          <h2>Account signals</h2>
+          <ul>
+            {sampleData.accounts.map((account) => (
+              <li key={account.account_id}>
+                <strong>{account.account_id}</strong> — {account.suspicion} ({account.score})
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="card">
+          <h2>Coordination groups</h2>
+          <ul>
+            {sampleData.coordination.map((group, index) => (
+              <li key={index}>
+                <strong>{group.label}</strong>
+                <div>{group.accounts.join(', ')}</div>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="card evidence-card">
+          <h2>Evidence summary</h2>
+          <ul>
+            {sampleData.evidence.map((point, index) => (
+              <li key={index}>{point}</li>
+            ))}
+          </ul>
+        </section>
+      </main>
+    </div>
+  );
+}

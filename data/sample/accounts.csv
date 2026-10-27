@@ -1,0 +1,36 @@
+# DuoBites architecture
+
+## Overview
+
+DuoBites is a layered system for analyzing suspicious online activity. The first MVP focuses on a reliable workflow rather than on high-volume production performance.
+
+## Layers
+
+1. Data ingestion
+   - CSV uploads are validated before analysis.
+   - Synthetic sample datasets allow local testing without private data.
+
+2. Feature and signal services
+   - Bot detection uses a baseline scikit-learn classifier.
+   - Claim analysis uses uncertainty-aware evidence logic.
+   - Coordination detection uses NetworkX to group similar activity.
+
+3. Risk aggregation
+   - Individual signals are combined into an explainable score.
+   - Missing evidence is explicitly described instead of filled with invented values.
+
+4. API layer
+   - FastAPI exposes upload and analysis endpoints.
+   - API documentation is generated automatically by FastAPI.
+
+5. Frontend dashboard
+   - A React dashboard consumes the API and visualizes risk signals.
+   - The dashboard is intentionally simple to keep the project beginner-friendly.
+
+## Design principles
+
+- Human review first
+- Evidence-based conclusions
+- Explainability over black-box decisions
+- Safe sample data only
+- Modular services to keep the project maintainable
